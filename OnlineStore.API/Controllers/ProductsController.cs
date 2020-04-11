@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using OnlineStore.Core.Entities;
 using OnlineStore.Core.Interfaces;
-using OnlineStore.Infrastructure.Data;
-using System;
+using OnlineStore.Core.Specifications;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace OnlineStore.API.Controllers
@@ -14,17 +11,24 @@ namespace OnlineStore.API.Controllers
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
-        private readonly IProductRepository _repo;
+        private readonly IGenericRepository<Product> _productRepository;
+        private readonly IGenericRepository<ProductBrand> _productBrandRepository;
+        private readonly IGenericRepository<ProductType> _productTypeRepository;
 
-        public ProductsController(IProductRepository repo)
+        public ProductsController(IGenericRepository<Product> _productRepository,
+                    IGenericRepository<ProductBrand> _productBrandRepository,
+                    IGenericRepository<ProductType> _productTypeRepository)
         {
-            _repo = repo;
+            this._productRepository = _productRepository;
+            this._productBrandRepository = _productBrandRepository;
+            this._productTypeRepository = _productTypeRepository;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<Product>>> GetProducts()
         {
-            var products = await _repo.GetProductsAsync();
+            var spec = new ProductsWithTypesAndBrandsSpecification();
+            var products = await _productRepository.ListAsync(spec);
 
             return Ok(products);
         }
@@ -32,19 +36,21 @@ namespace OnlineStore.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
-            return await _repo.GetProductByIdAsync(id);
+            var spec = new ProductsWithTypesAndBrandsSpecification(id);
+
+            return await _productRepository.GetOneAsync(spec);
         }
 
         [HttpGet("brands")]
         public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductBrands()
         {
-            return Ok(await _repo.GetProductBrandsAsync());
+            return Ok(await _productBrandRepository.ListAllAsync());
         }
 
         [HttpGet("types")]
         public async Task<ActionResult<IReadOnlyList<ProductType>>> GetProductTypes()
         {
-            return Ok(await _repo.GetProductTypesAsync());
+            return Ok(await _productTypeRepository.ListAllAsync());
         }
     }
 }
