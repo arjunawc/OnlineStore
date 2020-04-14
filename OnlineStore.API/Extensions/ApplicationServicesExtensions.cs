@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using OnlineStore.API.Errors;
 using OnlineStore.Core.Interfaces;
 using OnlineStore.Infrastructure.Data;
+using OnlineStore.Infrastructure.Services;
 using System.Linq;
 
 namespace OnlineStore.API.Extensions
@@ -11,6 +12,7 @@ namespace OnlineStore.API.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
+            services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IBasketRepository, BasketRepository>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 

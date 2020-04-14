@@ -8,6 +8,7 @@ using OnlineStore.API.Extensions;
 using OnlineStore.API.Helpers;
 using OnlineStore.API.Middleware;
 using OnlineStore.Infrastructure.Data;
+using OnlineStore.Infrastructure.Identity;
 using StackExchange.Redis;
 
 namespace OnlineStore.API
@@ -28,6 +29,10 @@ namespace OnlineStore.API
             services.AddControllers();
             services.AddDbContext<StoreContext>(x => 
                 x.UseSqlServer(_config.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<AppIdentityDbContext>(x =>
+            {
+                x.UseSqlServer(_config.GetConnectionString("IdentityConnection"));
+            });
             services.AddSingleton<IConnectionMultiplexer>(c =>
             {
                 var configuration = ConfigurationOptions.Parse(_config
@@ -35,6 +40,7 @@ namespace OnlineStore.API
                 return ConnectionMultiplexer.Connect(configuration);
             });
             services.AddApplicationServices();
+            services.AddIdentityServices(_config);
             services.AddSwaggerDocumentation();
             services.AddCors(opt =>
             {
@@ -59,6 +65,8 @@ namespace OnlineStore.API
             app.UseStaticFiles();
 
             app.UseCors("CorsPolicy");
+
+            app.UseAuthentication(); // should be just before UseAuthorization
 
             app.UseAuthorization();
 
