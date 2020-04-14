@@ -8,6 +8,7 @@ using OnlineStore.API.Extensions;
 using OnlineStore.API.Helpers;
 using OnlineStore.API.Middleware;
 using OnlineStore.Infrastructure.Data;
+using StackExchange.Redis;
 
 namespace OnlineStore.API
 {
@@ -27,7 +28,12 @@ namespace OnlineStore.API
             services.AddControllers();
             services.AddDbContext<StoreContext>(x => 
                 x.UseSqlServer(_config.GetConnectionString("DefaultConnection")));
-
+            services.AddSingleton<IConnectionMultiplexer>(c =>
+            {
+                var configuration = ConfigurationOptions.Parse(_config
+                    .GetConnectionString("Redis"), true);
+                return ConnectionMultiplexer.Connect(configuration);
+            });
             services.AddApplicationServices();
             services.AddSwaggerDocumentation();
             services.AddCors(opt =>

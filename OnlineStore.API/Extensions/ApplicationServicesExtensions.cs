@@ -11,6 +11,7 @@ namespace OnlineStore.API.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
+            services.AddScoped<IBasketRepository, BasketRepository>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
             /* Configure [ApiController] behavior for Invalid model state validation */
