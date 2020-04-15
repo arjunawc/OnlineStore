@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OnlineStore.Core.Entities;
+using OnlineStore.Core.Entities.OrderAggregate;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -61,6 +61,22 @@ namespace OnlineStore.Infrastructure.Data
                             context.Products.Add(item);
                         }
                         await context.SaveChangesAsync();
+                    }
+
+                    if (!context.DeliveryMethods.Any())
+                    {
+
+                        var dmData = File.ReadAllText("../OnlineStore.Infrastructure/Data/SeedData/delivery.json");
+
+                        var methods = JsonSerializer.Deserialize<List<DeliveryMethod>>(dmData);
+
+                        await context.Database.ExecuteSqlRawAsync($"SET IDENTITY_INSERT dbo.DeliveryMethods ON");
+                        foreach (var item in methods)
+                        {
+                            context.DeliveryMethods.Add(item);
+                        }
+                        await context.SaveChangesAsync();
+                        await context.Database.ExecuteSqlRawAsync($"SET IDENTITY_INSERT dbo.DeliveryMethods OFF");
                     }
 
                     transaction.Commit();
