@@ -2,10 +2,12 @@ using Microsoft.Extensions.Configuration;
 using OnlineStore.Core.Entities;
 using OnlineStore.Core.Entities.OrderAggregate;
 using OnlineStore.Core.Interfaces;
+using OnlineStore.Core.Specifications;
 using Stripe;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Order = OnlineStore.Core.Entities.OrderAggregate.Order;
 
 namespace OnlineStore.Infrastructure.Services
 {
@@ -80,6 +82,36 @@ namespace OnlineStore.Infrastructure.Services
             await _basketRepository.UpdateBasketAsync(basket);
 
             return basket;
+        }
+
+        public async Task<Order> UpdateOrderPaymentFailed(string paymentIntentId)
+        {
+            var spec = new OrderByPaymentIntentIdSpecification(paymentIntentId);
+            var order = await _unitOfWork.Repository<Order>().GetOneAsync(spec);
+
+            if (order == null) return null;
+
+            order.Status = OrderStatus.PaymentFailed;
+            _unitOfWork.Repository<Order>().Update(order);
+
+            await _unitOfWork.CompleteAsync();
+
+            return order;
+        }
+
+        public async Task<Order> UpdateOrderPaymentSucceeded(string paymentIntentId)
+        {
+            var spec = new OrderByPaymentIntentIdSpecification(paymentIntentId);
+            var order = await _unitOfWork.Repository<Order>().GetOneAsync(spec);
+
+            if (order == null) return null;
+
+            order.Status = OrderStatus.PaymentReceived;
+            _unitOfWork.Repository<Order>().Update(order);
+
+            await _unitOfWork.CompleteAsync();
+
+            return order;
         }
     }
 }
