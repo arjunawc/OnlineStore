@@ -15,5 +15,9 @@ namespace OnlineStore.Core.Entities
 
         public string Id { get; set; }
         public List<CustomerBasketItem> Items { get; set; } = new List<CustomerBasketItem>();
+        public int? DeliveryMethodId { get; set; }
+        public string ClientSecret { get; set; }
+        public string PaymentIntentId { get; set; }
+        public decimal ShippingPrice { get; set; }
     }
 }
