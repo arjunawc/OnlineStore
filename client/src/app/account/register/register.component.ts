@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, AsyncValidatorFn } from '@angular/forms';
 import { AccountService } from '../account.service';
 import { Router } from '@angular/router';
+import { timer, of } from 'rxjs';
+import { switchMap, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-register',
@@ -31,6 +33,7 @@ export class RegisterComponent implements OnInit {
           Validators.required,
           Validators.pattern('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$'),
         ],
+        [this.validateEmailNotTaken()]
       ],
       password: [null, [Validators.required]],
     });
@@ -46,5 +49,22 @@ export class RegisterComponent implements OnInit {
         console.log(error);
       }
     );
+  }
+
+  validateEmailNotTaken(): AsyncValidatorFn {
+    return (control) => {
+      return timer(500).pipe(
+        switchMap(() => {
+          if (!control.value) {
+            return of(null);
+          }
+          return this.accountService.checkEmailExists(control.value).pipe(
+            map((res) => {
+              return res ? { emailExists: true } : null;
+            })
+          );
+        })
+      );
+    };
   }
 }
