@@ -15,10 +15,10 @@ namespace OnlineStore.API.Controllers
     public class PaymentsController : BaseApiController
     {
         private readonly IPaymentService _paymentService;
-        private readonly ILogger _logger;
+        private readonly ILogger<PaymentsController> _logger;
         private readonly string _webhookSecret;
 
-        public PaymentsController(IPaymentService paymentService, ILogger logger, IConfiguration config)
+        public PaymentsController(IPaymentService paymentService, ILogger<PaymentsController> logger, IConfiguration config)
         {
             _paymentService = paymentService;
             _logger = logger;
