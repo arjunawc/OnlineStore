@@ -24,17 +24,40 @@ namespace OnlineStore.API
             _config = config;
         }
 
+        /* Convention based: when run on development mode this will automatically run */
+        public void ConfigureDevelopmentServices(IServiceCollection services)
+        {
+            services.AddDbContext<StoreContext>(x =>
+                x.UseSqlServer(_config.GetConnectionString("DefaultConnection")));
+
+            services.AddDbContext<AppIdentityDbContext>(x =>
+            {
+                x.UseSqlServer(_config.GetConnectionString("IdentityConnection"));
+            });
+
+            ConfigureServices(services);
+        }
+
+        /* Convention based: when run on production mode this will automatically run */
+        public void ConfigureProductionServices(IServiceCollection services)
+        {
+            services.AddDbContext<StoreContext>(x =>
+                x.UseMySql(_config.GetConnectionString("DefaultConnection")));
+
+            services.AddDbContext<AppIdentityDbContext>(x =>
+            {
+                x.UseMySql(_config.GetConnectionString("IdentityConnection"));
+            });
+
+            ConfigureServices(services);
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {           
             services.AddAutoMapper(typeof(MappingProfiles));
             services.AddControllers();
-            services.AddDbContext<StoreContext>(x => 
-                x.UseSqlServer(_config.GetConnectionString("DefaultConnection")));
-            services.AddDbContext<AppIdentityDbContext>(x =>
-            {
-                x.UseSqlServer(_config.GetConnectionString("IdentityConnection"));
-            });
+            
             services.AddSingleton<IConnectionMultiplexer>(c =>
             {
                 var configuration = ConfigurationOptions.Parse(_config

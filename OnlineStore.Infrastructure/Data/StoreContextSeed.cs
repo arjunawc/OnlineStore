@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using OnlineStore.Core.Entities;
 using OnlineStore.Core.Entities.OrderAggregate;
 using System;
@@ -17,69 +16,58 @@ namespace OnlineStore.Infrastructure.Data
         {
             try
             {
-                using (var transaction = context.Database.BeginTransaction())
+                if (!context.ProductBrands.Any())
                 {
-                    if (!context.ProductBrands.Any())
+                    var brandsData = File.ReadAllText("../OnlineStore.Infrastructure/Data/SeedData/brands_data.json");
+
+                    var brands = JsonSerializer.Deserialize<List<ProductBrand>>(brandsData);
+
+                    foreach (var item in brands)
                     {
-                        var brandsData = File.ReadAllText("../OnlineStore.Infrastructure/Data/SeedData/brands_data.json");
-
-                        var brands = JsonSerializer.Deserialize<List<ProductBrand>>(brandsData);
-
-                        await context.Database.ExecuteSqlRawAsync($"SET IDENTITY_INSERT dbo.ProductBrands ON");
-                        foreach (var item in brands)
-                        {
-                            context.ProductBrands.Add(item);
-                        }
-                        await context.SaveChangesAsync();
-                        await context.Database.ExecuteSqlRawAsync($"SET IDENTITY_INSERT dbo.ProductBrands OFF");
+                        context.ProductBrands.Add(item);
                     }
+                    await context.SaveChangesAsync();
+                }
 
-                    if (!context.ProductTypes.Any())
+                if (!context.ProductTypes.Any())
+                {
+                    var typesData = File.ReadAllText("../OnlineStore.Infrastructure/Data/SeedData/types_data.json");
+
+                    var types = JsonSerializer.Deserialize<List<ProductType>>(typesData);
+
+                    foreach (var item in types)
                     {
-                        var typesData = File.ReadAllText("../OnlineStore.Infrastructure/Data/SeedData/types_data.json");
-
-                        var types = JsonSerializer.Deserialize<List<ProductType>>(typesData);
-
-                        await context.Database.ExecuteSqlRawAsync($"SET IDENTITY_INSERT dbo.ProductTypes ON");
-                        foreach (var item in types)
-                        {
-                            context.ProductTypes.Add(item);
-                        }
-                        await context.SaveChangesAsync();
-                        await context.Database.ExecuteSqlRawAsync($"SET IDENTITY_INSERT dbo.ProductTypes OFF");
+                        context.ProductTypes.Add(item);
                     }
+                    await context.SaveChangesAsync();
+                }
 
-                    if (!context.Products.Any())
+                if (!context.Products.Any())
+                {
+
+                    var productsData = File.ReadAllText("../OnlineStore.Infrastructure/Data/SeedData/products_data.json");
+
+                    var products = JsonSerializer.Deserialize<List<Product>>(productsData);
+
+                    foreach (var item in products)
                     {
-
-                        var productsData = File.ReadAllText("../OnlineStore.Infrastructure/Data/SeedData/products_data.json");
-
-                        var products = JsonSerializer.Deserialize<List<Product>>(productsData);
-
-                        foreach (var item in products)
-                        {
-                            context.Products.Add(item);
-                        }
-                        await context.SaveChangesAsync();
+                        context.Products.Add(item);
                     }
+                    await context.SaveChangesAsync();
+                }
 
-                    if (!context.DeliveryMethods.Any())
+                if (!context.DeliveryMethods.Any())
+                {
+
+                    var dmData = File.ReadAllText("../OnlineStore.Infrastructure/Data/SeedData/delivery_data.json");
+
+                    var methods = JsonSerializer.Deserialize<List<DeliveryMethod>>(dmData);
+
+                    foreach (var item in methods)
                     {
-
-                        var dmData = File.ReadAllText("../OnlineStore.Infrastructure/Data/SeedData/delivery_data.json");
-
-                        var methods = JsonSerializer.Deserialize<List<DeliveryMethod>>(dmData);
-
-                        await context.Database.ExecuteSqlRawAsync($"SET IDENTITY_INSERT dbo.DeliveryMethods ON");
-                        foreach (var item in methods)
-                        {
-                            context.DeliveryMethods.Add(item);
-                        }
-                        await context.SaveChangesAsync();
-                        await context.Database.ExecuteSqlRawAsync($"SET IDENTITY_INSERT dbo.DeliveryMethods OFF");
+                        context.DeliveryMethods.Add(item);
                     }
-
-                    transaction.Commit();
+                    await context.SaveChangesAsync();
                 }
             }
             catch (Exception ex)
