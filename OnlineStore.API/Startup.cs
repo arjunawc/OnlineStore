@@ -1,9 +1,11 @@
+using System.IO;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using OnlineStore.API.Extensions;
 using OnlineStore.API.Helpers;
 using OnlineStore.API.Middleware;
@@ -62,7 +64,12 @@ namespace OnlineStore.API
 
             app.UseRouting();
 
-            app.UseStaticFiles();
+            app.UseStaticFiles(); // serve anything inside wwwroot
+            app.UseStaticFiles(new StaticFileOptions {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "Content")
+                ), RequestPath = "/content"
+            });
 
             app.UseCors("CorsPolicy");
 
@@ -75,6 +82,7 @@ namespace OnlineStore.API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapFallbackToController("Index", "Fallback");
             });
         }
     }

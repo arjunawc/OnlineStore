@@ -19,7 +19,7 @@ namespace OnlineStore.API.Helpers
         {
             if(!string.IsNullOrEmpty(source.ItemOrdered.PictureUrl))
             {
-                return _config["ApiUrl"] + source.ItemOrdered.PictureUrl;
+                return _config["ContentUrl"] + source.ItemOrdered.PictureUrl;
             }
 
             return null;
