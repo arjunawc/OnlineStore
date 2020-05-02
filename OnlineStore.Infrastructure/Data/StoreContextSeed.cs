@@ -21,7 +21,7 @@ namespace OnlineStore.Infrastructure.Data
                 {
                     if (!context.ProductBrands.Any())
                     {
-                        var brandsData = File.ReadAllText("../OnlineStore.Infrastructure/Data/SeedData/brands.json");
+                        var brandsData = File.ReadAllText("../OnlineStore.Infrastructure/Data/SeedData/brands_data.json");
 
                         var brands = JsonSerializer.Deserialize<List<ProductBrand>>(brandsData);
 
@@ -36,7 +36,7 @@ namespace OnlineStore.Infrastructure.Data
 
                     if (!context.ProductTypes.Any())
                     {
-                        var typesData = File.ReadAllText("../OnlineStore.Infrastructure/Data/SeedData/types.json");
+                        var typesData = File.ReadAllText("../OnlineStore.Infrastructure/Data/SeedData/types_data.json");
 
                         var types = JsonSerializer.Deserialize<List<ProductType>>(typesData);
 
@@ -52,7 +52,7 @@ namespace OnlineStore.Infrastructure.Data
                     if (!context.Products.Any())
                     {
 
-                        var productsData = File.ReadAllText("../OnlineStore.Infrastructure/Data/SeedData/products.json");
+                        var productsData = File.ReadAllText("../OnlineStore.Infrastructure/Data/SeedData/products_data.json");
 
                         var products = JsonSerializer.Deserialize<List<Product>>(productsData);
 
@@ -66,7 +66,7 @@ namespace OnlineStore.Infrastructure.Data
                     if (!context.DeliveryMethods.Any())
                     {
 
-                        var dmData = File.ReadAllText("../OnlineStore.Infrastructure/Data/SeedData/delivery.json");
+                        var dmData = File.ReadAllText("../OnlineStore.Infrastructure/Data/SeedData/delivery_data.json");
 
                         var methods = JsonSerializer.Deserialize<List<DeliveryMethod>>(dmData);
 

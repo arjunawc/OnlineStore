@@ -1,0 +1,18 @@
+[
+  {
+    "Id": 1,
+    "Name": "Resin"
+  },
+  {
+    "Id": 2,
+    "Name": "Leather"
+  },
+  {
+    "Id": 3,
+    "Name": "Rubber"
+  },
+  {
+    "Id": 4,
+    "Name": "Stainless Steel"
+  }
+]
