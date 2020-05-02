@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Content\**" CopyToPublishDirectory="PreserveNewest" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
   
