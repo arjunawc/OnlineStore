@@ -1,5 +1,5 @@
+[![Build Status](https://dev.azure.com/arjunawc/OnlineStore/_apis/build/status/OnlineStore-ASP.NET%20Core-CI?branchName=master)](https://dev.azure.com/arjunawc/OnlineStore/_build/latest?definitionId=2&branchName=master)
 # OnlineStore
-
 OnlineStore is a prototype application which demonstrates online shopping application which has below use cases implementations:
 * User Registration and Login
 * Listing products for online sales
